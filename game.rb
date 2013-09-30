@@ -1,8 +1,9 @@
 class House
-  attr_accessor  :rooms, :items, :player
+  attr_accessor  :rooms, :items, :player, :satchel
     
-  def initialize(player)
+  def initialize(player, satchel)
     @player = player
+    @satchel = satchel
     @rooms=[]
     @items=[]
   end
@@ -22,14 +23,16 @@ class House
   end
   
   def get_room_description
-    puts "You're in " + find_room(@player.location).description
+    puts "You're in #{find_room(@player.location).description}."
   end
   
   def get_room_inventory
     if find_room(@player.location).inventory == nil
         puts "No items in this room."
     else
-        puts "Items in this room: " + find_room(@player.location).inventory.to_s
+      list = find_room(@player.location).inventory
+      list = list.join(", ")
+      puts "Items in this room: #{list}."
     end
   end
   
@@ -41,8 +44,26 @@ class House
       @items.detect {|item| item.tag == tag}
   end
   
+  #Add item to Satchel contents. Remove item from room.
+  def add_item(item)
+    item = item.to_sym
+    satchel.contents << item
+    puts "Your satchel has been updated!"
+    find_room(@player.location).inventory.delete_if {|x| x==item}
+  end
+  
+  #Delete item from the satchel. Add to the room player currently occupies.
+  def remove_item(item)
+    item = item.to_sym
+    satchel.contents.delete_if {|x| x==item}
+    find_room(@player.location).inventory << item
+    p satchel.contents
+    p find_room(@player.location).inventory
+  end
+  
+  
   def prompt_action
-    puts "What would you like to do? (\"go\", \"investigate\") \n <<"
+    puts "What would you like to do? (\"go\", \"investigate\", \"add\", \"drop\") \n <<"
     command = gets.chomp
     if command == "go"
       puts "In which direction? \n <<" 
@@ -52,6 +73,14 @@ class House
       puts "What object would you like to investigate?"
       obj = gets.chomp
       player.investigate(obj, self)
+    elsif command == "add"
+      puts "What object would you like to add?"
+      item = gets.chomp
+      add_item(item)
+    elsif command == "drop"
+      puts "What object would you like to drop?"
+      item = gets.chomp
+      remove_item(item)
     else
       puts "That's not allowed in Grandma's house! Try something else."
     end
@@ -97,13 +126,7 @@ class Room
     @links = links
     @inventory = inventory
   end
-
-  def room_description
-    "You are in " + @description + "."
-  end
 end
-
-
 
 
 class Item
@@ -119,23 +142,26 @@ class Item
     
     def item_description
         @description
-    end
-    
+    end 
 end 
 
 class Monster
-  attr_accessor
+  attr_accessor :name, :ferocity
   
-  def initialize
+  def initialize(name, ferocity)
+    @name = name
+    @ferocity = ferocity
   end
   
 end
 
 class Satchel
-  attr_accessor
+  attr_accessor :contents
   
   def initialize
+    @contents = []
   end
+  
 end 
 
 
@@ -155,12 +181,14 @@ end
 
 #create new house and player
 player = Player.new(name)
-house = House.new(player)
+satchel = Satchel.new
+house = House.new(player, satchel)
+
 
 #Create a few rooms inside Grandma's House.
-house.create_room(:kitchen, "an avocado-green kitchen full of fruit flies", {:west => :parlor, :north => :basement}, nil)
-house.create_room(:parlor, "a parlor stacked to the ceiling with National Geographic magazines", {:east => :kitchen}, nil)
-house.create_room(:basement, "a basement full of canning jars and 1940s exercise machines. To the south you can see the stairs you just fell down and the light from the kitchen", {:south => :kitchen}, :pickles)
+house.create_room(:kitchen, "an avocado-green kitchen full of fruit flies", {:west => :parlor, :north => :basement}, [nil])
+house.create_room(:parlor, "a parlor stacked to the ceiling with National Geographic magazines", {:east => :kitchen}, [nil])
+house.create_room(:basement, "a basement full of canning jars and 1940s exercise machines. To the south you can see the stairs you just fell down and the light from the kitchen", {:south => :kitchen}, [:pickles])
 =begin
 house.create_room(:front_yard)
 house.create_room(:back_yard)
