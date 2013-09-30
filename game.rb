@@ -12,7 +12,25 @@ class House
   end
   
   def find_room(tag)
-      @rooms.detect {|room| room.tag == tag}
+    @rooms.detect {|room| room.tag == tag}
+  end
+  
+  #takes current player location and finds the next room in the specified direction
+  def update_current_room(direction)
+    direction = direction.to_sym
+    @player.location = find_room(@player.location).links[direction]
+  end
+  
+  def get_room_description
+    puts "You're in " + find_room(@player.location).description
+  end
+  
+  def get_room_inventory
+    if find_room(@player.location).inventory == nil
+        puts "No items in this room."
+    else
+        puts "Items in this room: " + find_room(@player.location).inventory.to_s
+    end
   end
   
   def create_item(tag, name, description, sanity_points, room)
@@ -24,16 +42,16 @@ class House
   end
   
   def prompt_action
-    puts 'What would you like to do? ("go, "investigate")'
+    puts "What would you like to do? (\"go\", \"investigate\") \n <<"
     command = gets.chomp
     if command == "go"
-      puts "In which direction?"
+      puts "In which direction? \n <<" 
       dir = gets.chomp
-      player.move(dir)
+      player.move(dir, self)
     elsif command == "investigate"
       puts "What object would you like to investigate?"
       obj = gets.chomp
-      player.investiage(obj)
+      player.investigate(obj, self)
     else
       puts "That's not allowed in Grandma's house! Try something else."
     end
@@ -51,42 +69,40 @@ class Player
       @sanity = 100
   end
   
-  #Update players's current location by finding the direction key in the current location's links hash. Print description of new room. Print inventory list.
-  def move(direction)
-      puts "You move " + direction.to_s
-      @location = find_room(@location).links[direction]
-      puts find_room(@location).room_description
-      if find_room(@location).inventory == nil
-          puts "No items in this room."
-      else
-          puts "Items in this room: " + find_room(@location).inventory.to_s
-      end
+  #Update players's current location. Print description of new room. Print inventory list.
+  def move(direction, house)
+      puts "You move #{direction.to_s}."
+      house.update_current_room(direction)
+      house.get_room_description
+      house.get_room_inventory
   end
   
   #Describe items. Print how item affects sanity.
-  def investigate(tag)
-    puts find_item(tag).item_description
-    @sanity = @sanity + find_item(tag).sanity_points
-    puts @sanity
+  def investigate(tag, house)
+    tag = tag.to_sym
+    puts house.find_item(tag).item_description
+    @sanity = @sanity + house.find_item(tag).sanity_points
+    puts "Your sanity level has changed by #{house.find_item(tag).sanity_points} points."
+    puts "Your current sanity level is: #{@sanity}."
   end
 end
 
 
-
 class Room
   attr_accessor :tag, :description, :links, :inventory
-  
+
   def initialize(tag, description, links, inventory)
     @tag = tag
     @description = description
     @links = links
     @inventory = inventory
   end
-  
+
   def room_description
     "You are in " + @description + "."
   end
 end
+
 
 
 
@@ -105,7 +121,22 @@ class Item
         @description
     end
     
-end  
+end 
+
+class Monster
+  attr_accessor
+  
+  def initialize
+  end
+  
+end
+
+class Satchel
+  attr_accessor
+  
+  def initialize
+  end
+end 
 
 
 
