@@ -27,14 +27,14 @@ game.register(house)
 
 #Create a few rooms inside Grandma's House.
 house.create_room(:kitchen, "an avocado-green kitchen full of fruit flies", {:west => :parlor, :north => :basement}, [:fragment2])
-house.create_room(:parlor, "a parlor stacked to the ceiling with National Geographic magazines", {:east => :kitchen}, [nil])
+house.create_room(:parlor, "a parlor stacked to the ceiling with National Geographic magazines", {:east => :kitchen, :west => :bedroom, :north => :back_yard}, [nil])
 house.create_room(:basement, "a basement full of canning jars and 1940s exercise machines. To the south you can see the stairs you just fell down and the light from the kitchen", {:south => :kitchen}, [:pickles])
 house.create_room(:front_yard, "on a hill in the front yard looking down on Grandma's house", {:north => :parlor}, [])
 house.create_room(:back_yard, "the backyard. To the west is a ramshackle shed and to the east is a garden gone wild", {:west => :shed, :east => :garden, :south =>  :parlor}, [])
 house.create_room(:bedroom, "the bedroom", {:north => :bathroom, :east => :parlor}, [:armoire, :fragment1])
 house.create_room(:bathroom, "the bathroom", {:south => :bedroom}, [])
 house.create_room(:garden, "an overgrown garden", {:west => :back_yard}, [:catnip])
-house.create_room(:shed, "a shed full of junk", {:east => :back_yard}, [:shovel, :fragment3] )
+house.create_room(:shed, "a shed full of junk", {:east => :back_yard}, [:fragment3] )
 
 #Create some objects
 house.create_item(:pickles, "Pickle Jar", "Ugh! That pickle was gross. In fact, you can feel a bout of botulism-induced insanity taking hold.", -10) 

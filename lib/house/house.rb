@@ -10,12 +10,10 @@ class House
     @items=[]
   end
   
-  def update
+  def update(game)
     if find_room(:front_yard).inventory.include?(:phone)
       puts "You take out the phone in the front yard. At last: reception! You call Bob Smith and he puts Grandma on the line. Turns out she's eloped to Florida. YOU WIN."
-      false
-    else
-      true
+      game.end
     end
   end
     
@@ -58,18 +56,27 @@ class House
   
   #Add item to Satchel contents. Remove item from room.
   def add_item(item)
-    item = item.to_sym
-    satchel.contents << item
-    puts "Your satchel has been updated!"
-    find_room(@player.location).inventory.delete_if {|x| x==item}
+    item = item.to_sym    
+    if find_room(@player.location).inventory.include?(item)
+      satchel.contents << item
+      puts "Your satchel has been updated!"
+      find_room(@player.location).inventory.delete_if {|x| x==item}
+    else
+      puts "That item is not in the room."
+      puts "Items in this room: #{find_room(@player.location).inventory.join(", ")}."
+    end
   end
   
   #Delete item from the satchel. Add to the room player currently occupies.
   def remove_item(item)
     item = item.to_sym
-    satchel.contents.delete_if {|x| x==item}
-    find_room(@player.location).inventory << item
-    puts "Your satchel has been updated!"
+    if satchel.contents.include?(item)
+      satchel.contents.delete_if {|x| x==item}
+      find_room(@player.location).inventory << item
+      puts "Your satchel has been updated!"
+    else
+      puts "That's not in your satchel. Your satchel contains: #{satchel.contents.join(", ")}."
+    end
   end
   
   

@@ -1,6 +1,0 @@
-require_relative 'lib/house.rb'
-require_relative 'lib/satchel.rb'
-require_relative 'lib/monster.rb'
-require_relative 'lib/item.rb'
-require_relative 'lib/room.rb'
-require_relative 'lib/player.rb'

@@ -19,10 +19,14 @@ class Player
   
   #Update players's current location. Print description of new room. Print inventory list.
   def move(direction, house)
+    if house.find_room(@location).links.include?(direction.to_sym)
       puts "You move #{direction.to_s}."
       house.update_current_room(direction)
       house.get_room_description
       house.get_room_inventory
+    else
+      puts "Unfortunately, only ghosts can walk through walls. You might want to try another way out."
+    end
   end
   
   #Describe items. Print how item affects sanity.
