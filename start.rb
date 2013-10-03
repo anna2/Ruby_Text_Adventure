@@ -18,15 +18,10 @@ puts "Welcome, #{name}. You're in the kitchen where there's a weird smell."
 player = Player.new(name)
 satchel = Satchel.new
 house = House.new(player, satchel)
-game = Game.new(house)
-
-game.register(player)
-game.register(satchel)
-game.register(house)
-
+game = Game.new(house, player, satchel)
 
 #Create a few rooms inside Grandma's House.
-house.create_room(:kitchen, "an avocado-green kitchen full of fruit flies", {:west => :parlor, :north => :basement}, [:fragment2])
+house.create_room(:kitchen, "an avocado-green kitchen full of fruit flies", {:west => :parlor, :north => :basement}, [:pickles, :fragment2])
 house.create_room(:parlor, "a parlor stacked to the ceiling with National Geographic magazines", {:east => :kitchen, :west => :bedroom, :north => :back_yard}, [nil])
 house.create_room(:basement, "a basement full of canning jars and 1940s exercise machines. To the south you can see the stairs you just fell down and the light from the kitchen", {:south => :kitchen}, [:pickles])
 house.create_room(:front_yard, "on a hill in the front yard looking down on Grandma's house", {:north => :parlor}, [])

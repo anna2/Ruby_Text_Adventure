@@ -10,10 +10,10 @@ class Player
       @sanity = 100
   end
   
-  def update(game)
+  def sanity_check(game)
     if is_insane?
       puts "Like many an adventurer before you, Grandma's House has driven you mad! GAME OVER."
-      game.end
+        game.end
     end
   end
   
@@ -30,12 +30,17 @@ class Player
   end
   
   #Describe items. Print how item affects sanity.
-  def investigate(tag, house)
-    tag = tag.to_sym
-    puts house.find_item(tag).item_description
-    @sanity = @sanity + house.find_item(tag).sanity_points
-    puts "Your sanity level has changed by #{house.find_item(tag).sanity_points} points."
-    puts "Your current sanity level is: #{@sanity}."
+  def investigate(obj, house)
+    obj = obj.to_sym
+    if house.find_room(@location).inventory.include?(obj)
+      puts house.find_item(obj).item_description
+      @sanity = @sanity + house.find_item(obj).sanity_points
+      puts "Your sanity level has changed by #{house.find_item(obj).sanity_points} points."
+      puts "Your current sanity level is: #{@sanity}."
+    else
+      puts "That item does not appear to be in the room."
+      puts "Items in this room: #{house.find_room(@location).inventory.join(", ")}."
+    end
   end
   
   def is_insane?

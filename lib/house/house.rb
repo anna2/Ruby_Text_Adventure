@@ -7,16 +7,8 @@ class House
     @player = player
     @satchel = satchel
     @rooms=[]
-    @items=[]
+    @items = []
   end
-  
-  def update(game)
-    if find_room(:front_yard).inventory.include?(:phone)
-      puts "You take out the phone in the front yard. At last: reception! You call Bob Smith and he puts Grandma on the line. Turns out she's eloped to Florida. YOU WIN."
-      game.end
-    end
-  end
-    
   
   def create_room(tag, description, links, inventory)
     @rooms << Room.new(tag, description, links, inventory)
@@ -24,6 +16,17 @@ class House
   
   def find_room(tag)
     @rooms.detect {|room| room.tag == tag}
+  end
+
+  #Create an item and add a reference to it to the master list of all the items in the house.
+  def create_item(symbol_name, name, description, sanity_points)
+    symbol_name = Item.new(name, description, sanity_points)
+    @items << symbol_name
+
+  #Search the master list for a particular item.
+  def find_item(obj)
+    obj = obj.to_sym
+    @items.detect {|item| item = obj}
   end
   
   #takes current player location and finds the next room in the specified direction
@@ -38,7 +41,7 @@ class House
   
   def get_room_inventory
     if find_room(@player.location).inventory == nil
-        puts "No items in this room."
+      puts "No items in this room."
     else
       list = find_room(@player.location).inventory
       list = list.join(", ")
@@ -46,15 +49,7 @@ class House
     end
   end
   
-  def create_item(tag, name, description, sanity_points)
-      @items << Item.new(tag, name, description, sanity_points)
-  end
-  
-  def find_item(tag)
-      @items.detect {|item| item.tag == tag}
-  end
-  
-  #Add item to Satchel contents. Remove item from room.
+  #Move item from the current room to the satchel.
   def add_item(item)
     item = item.to_sym    
     if find_room(@player.location).inventory.include?(item)
@@ -67,7 +62,7 @@ class House
     end
   end
   
-  #Delete item from the satchel. Add to the room player currently occupies.
+  #Move item from satchel to the room the player currently occupies.
   def remove_item(item)
     item = item.to_sym
     if satchel.contents.include?(item)
@@ -78,29 +73,5 @@ class House
       puts "That's not in your satchel. Your satchel contains: #{satchel.contents.join(", ")}."
     end
   end
-  
-  
-  def prompt_action
-    puts "What would you like to do? (\"go\", \"investigate\", \"pack\", \"unpack\") \n <<"
-    command = gets.chomp
-    if command == "go"
-      puts "In which direction? \n <<" 
-      dir = gets.chomp
-      player.move(dir, self)
-    elsif command == "investigate"
-      puts "What object would you like to investigate?"
-      obj = gets.chomp
-      player.investigate(obj, self)
-    elsif command == "pack"
-      puts "What object would you like to pack?"
-      item = gets.chomp
-      add_item(item)
-    elsif command == "unpack"
-      puts "What object would you like to unpack?"
-      item = gets.chomp
-      remove_item(item)
-    else
-      puts "That's not allowed in Grandma's house! Try something else."
-    end
-  end
+end
 end
