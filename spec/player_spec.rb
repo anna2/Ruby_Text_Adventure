@@ -12,7 +12,7 @@ describe Player do
         item = Item.new("name", "description", -100)
         house = double
         house.stub(:find_item) { item }
-        @player.investigate('some tag', house)
+        @player.investigate('obj', house)
       end
 
       it 'should end the game' do

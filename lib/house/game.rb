@@ -53,8 +53,10 @@ class Game
   end
 
   def prompt_action
-    puts "What would you like to do? (\"go\", \"investigate\", \"pack\", \"unpack\") \n <<"
-    command = gets.chomp
+    "What would you like to do? (\"go\", \"investigate\", \"pack\", \"unpack\") \n <<"
+  end
+
+  def process_response(command)
     if command == "go"
       puts "In which direction? \n <<" 
       dir = gets.chomp
