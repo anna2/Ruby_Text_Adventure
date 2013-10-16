@@ -6,6 +6,6 @@ class Satchel
   def initialize
     @contents = []
   end
-  
+
 end 
 

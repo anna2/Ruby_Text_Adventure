@@ -1,6 +1,5 @@
 require_relative '../files'
 
-
 class Room
   attr_accessor :tag, :description, :links, :inventory
 

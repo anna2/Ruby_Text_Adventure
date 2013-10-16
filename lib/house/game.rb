@@ -1,11 +1,20 @@
 require_relative '../files'
 
 class Game
+  attr_accessor :game_active, :hash
+
   def initialize(house, player, satchel)
     @house = house
     @player = player
     @satchel = satchel
     @game_active = true
+    @hash = {
+      "go" => "In which direction?", 
+      "investigate" => "What object would you like to investigate?",
+      "pack" => "What object would you like to pack?",
+      "unpack" => "What object would you like to unpack?",
+      "check" => "Check what? Your satchel perhaps?"
+    }
   end
   
   def end
@@ -39,43 +48,59 @@ class Game
   def create_key
     if @house.find_room(:garden).inventory.include?(:shovel)
       @house.find_room(:garden).inventory << Item.new(:key, "key", "There's a key, but what's it for?", 10)
-      puts house.find_item(:key).item_description #FIX ME!!!!
+      puts @house.find_item(:key).item_description #FIX ME!!!!
     end
   end
-  
-  def play
-    while @game_active
-      prompt_action
-      win_condition
-      @player.sanity_check(self)
-      unlock_features
-    end  
+
+  #If player has key, armoire can be unlocked.
+  #In practice, replace the locked armoire item with an unlocked armoire item.
+  def unlock_armoire
+    if @house.find_room(:bedroom).inventory.include?(:key)
+      #create unlocked armoire
+      create_item(:armoire_unlocked, "armoire", "This armoire is unlocked. Hey, when you look inside it, you see a secret room extending to the west. Spooky.", 30)
+      @house.find_room(:bedroom).inventory << :armoire_unlocked
+      #delete locked armoire reference in bedroom array
+      @house.find_room(:bedroom).inventory.delete(:armoire_locked)
+      @last_move_message = "You took the key out of your pack and it fit the armoire!"
+      #create secret_room visible through unlocked armoire
+      create_room(:secret_room, "a dark, dusty room", {:east => :bedroom})
+      @house.find_room(:bedroom).links[:west => :secret_room]
+      #populate secret_room with an angry cat!
+      create_item(:monster_cat, "This cat is really angry!!! Are you sure you're ready for this battle?", -50)
+      @house.find_room(:secret_room).inventory << :monster_cat
+    end
+  end
+
+  #Player needs catnip to defeat cat.
+  #If player defeats cat, put phone in secret_room inventory.
+  def create_phone
+    if @house.find_room(:inventory).include?(:catnip)
+      #delete angry cat & create happy cat
+      @house.find_room(:secret_room).inventory.delete(:monster_cat)
+      create_item(:happy_cat, "happy cat", "It's bad karma to mess with a really happy cat. Just leave him alone with his catnip already, #{@player.name}.", -5)
+      @house.find_room(:secret_room).inventory << :happy_cat
+      #create phone
+      create_item(:phone, "phone", "I wonder where there will be good enough reception to use this phone?", 0)
+      #TO DO: restore sanity
+      @last_move_message = "Your catnip has soothed the angry cat. Now that fur is no longer flying, you see an obect on the floor. Is that a phone?"
+    end
   end
 
   def prompt_action
-    "What would you like to do? (\"go\", \"investigate\", \"pack\", \"unpack\") \n <<"
+    "What would you like to do? (\"go\", \"investigate\", \"pack\", \"unpack\", \"check\", \"ponder\", \"fight\")"
   end
 
-  def process_response(command)
-    if command == "go"
-      puts "In which direction? \n <<" 
-      dir = gets.chomp
-      @player.move(dir, @house)
-    elsif command == "investigate"
-      puts "What object would you like to investigate?"
-      obj = gets.chomp
-      @player.investigate(obj, @house)
-    elsif command == "pack"
-      puts "What object would you like to pack?"
-      item = gets.chomp
-      @house.add_item(item)
-    elsif command == "unpack"
-      puts "What object would you like to unpack?"
-      item = gets.chomp
-      @house.remove_item(item)
+  def follow_up_q(command)
+    if @hash.has_key?(command)
+      message2 = @hash[command]
     else
-      puts "That's not allowed in Grandma's house! Try something else."
+      message2 = "That's not allowed in Grandma's house! Try something else."
     end
+    message2
+  end
+
+  def describe_last_move
+    "#{@house.last_move_message}"
   end
 
 end
