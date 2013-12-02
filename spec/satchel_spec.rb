@@ -1,5 +1,1 @@
-require 'spec_helper.rb'
-
-describe Satchel do
-
-end
+require_relative '../app/files'

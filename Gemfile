@@ -1,6 +1,3 @@
-source "https://rubygems.org"
-
+source 'http://rubygems.org'
 gem 'rspec'
-gem 'sinatra', require: 'sinatra/base'
-gem 'sinatra-contrib', require: 'sinatra/reloader'
-gem 'nokogiri'   
+gem 'nokogiri'

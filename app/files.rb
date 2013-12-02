@@ -1,0 +1,7 @@
+require_relative './game'
+require_relative './headlines'
+require_relative './house'
+require_relative './item'
+require_relative './player'
+require_relative './room'
+require_relative './satchel'
