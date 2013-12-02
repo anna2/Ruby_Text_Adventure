@@ -2,10 +2,6 @@ Grandma's House: The Text Adventure
 =========
 
 This is a command-line text adventure written in Ruby. I wrote it to practice Ruby basics and learn about topics like RSpec and web scraping.
- ___                    _                   _ _                    
-/  _>  _ _  ___ ._ _  _| |._ _ _  ___  ___ | | | ___  _ _  ___ ___ 
-| <_/\| '_><_> || ' |/ . || ' ' |<_> |<_-< |   |/ . \| | |<_-</ ._>
-`____/|_|  <___||_|_|\___||_|_|_|<___|/__/ |_|_|\___/`___|/__/\___.
 
 Objective: Find Grandma before your sanity points bottom out.
 
